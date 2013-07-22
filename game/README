@@ -1,0 +1,7 @@
+The IGame is the entry point ( like main() )
+
+The game is responsible for:
+ Managing the players
+ Dealing the cards
+ Determining the winner of each turn
+ Determining when a player has won the game

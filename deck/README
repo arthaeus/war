@@ -1,0 +1,12 @@
+An IDeck is made up of ICards
+
+The IDeck is responsible for:
+
+Shuffling.
+Resetting (Populating itself with ICards).
+Keeping track of its state.
+Returning an ICard (Getter).
+
+The IDeck will not be responsible for:
+Dealing - A IDeck of ICards can be used for many different IGames.  I think that it should be the concern of the IGame to know how to deal out the ICards.  I assume that different card games have different ways of dealing out ICards.
+

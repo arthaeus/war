@@ -1,0 +1,6 @@
+To run, do the following from the console:
+
+cd game
+php war.php
+
+The output from the war game will appear on your console screen
