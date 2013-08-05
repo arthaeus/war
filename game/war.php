@@ -3,7 +3,8 @@
 namespace War\Game;
 require_once( "../interfaces.php" );
 require_once( "../player/warIPlayer.php" );
-require_once( "../deck/standardIDeck.php" );
+//require_once( "../deck/standardIDeck.php" );
+require_once( "../deck/unoIDeck.php" );
 require_once( "../turn/warITurn.php" );
 
 use \stdClass               as stdClass;
@@ -12,17 +13,19 @@ use War\Interfaces\IGame;
 use War\Interfaces\IDeck;
 use War\Interfaces\ITurn;
 use War\Card\NoICardException;
-use War\Deck\standardIDeck;
+//use War\Deck\standardIDeck;
+use War\Deck\unoIDeck;
 use War\Player\warIPlayer;
 use War\Turn\normalWarITurn;
 
 class war implements IGame
 {
 
-  public static $warStats = array();
+  public static $warStats = null;
   private $IPlayers       = array();
   private $IDeck          = array();
-  const MAX_WAR_WINS      = 3;
+  const MAX_WAR_WINS      = 100;
+  const MAX_TURNS         = 10000;
 
   public function __construct()
   {
@@ -30,6 +33,15 @@ class war implements IGame
 
   public static function addWarStat( stdClass $warStat )
   {
+
+    if( !self::$warStats )
+    {
+        self::$warStats = array();
+        if( !array_key_exists( self::$warStats[$warStat->playerName] ) )
+        {
+            self::$warStats[$playerName];
+        }
+    }
 
     self::$warStats[$warStat->playerName]['wins']++;
     if( self::$warStats[$warStat->playerName]['wins'] == self::MAX_WAR_WINS )
@@ -91,7 +103,7 @@ class war implements IGame
      * Create the IDeck of ICards for this game.  Just a standard deck
      * Shuffle and deal the ICards
      */
-    $deckOfCards = new standardIDeck();
+    $deckOfCards = new unoIDeck();
     $deckOfCards->buildIDeck();
     $deckOfCards->shuffleIDeck();
 
@@ -107,8 +119,13 @@ class war implements IGame
      */
 
     $keepGoing = true;
+
+    //how many turns have been played.  This variable will be incremented by one after each turn is played.  the incrementing will be done by the following while loop
+    $turnCount = 0;
     while( $keepGoing )
     {
+
+      echo "PLAYING TURN $turnCount out of " . self::MAX_TURNS . "\n\n";
       /**
        * create a new turn, and give the turn the information about this IGame (players, their cards, etc)
        */
@@ -119,6 +136,14 @@ class war implements IGame
        * Play the turn
        */
       $keepGoing = $ITurn->play();
+      $turnCount++;
+      if( $turnCount == self::MAX_TURNS )
+      {
+          echo "The maximum number of turns has been met.  The game is a draw \n";
+          print_r( self::$warStats );
+          echo "AT THE END OF THE GAME, THE CARD COUNTS ARE: \n$player0Name = " . count( $player0->getICardCollection()->getICards() ) . " \nTO \n$player1Name = " . count( $player1->getICardCollection()->getICards() ) . "\n\n";
+          exit;
+      }
     }
 
     if( count( $player0->getICardCollection()->getICards() ) == 0 )
