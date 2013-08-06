@@ -170,6 +170,7 @@ class battleWarITurn extends abstractITurn implements ITurn
       echo "ANOTHER WAR!! \n";
     }
 
+    $winner = $warStat = new stdClass;
     $winner->winnerIndex = $winnerIndex;
     $winner->ICardCollection = $this->ICardCollection->getICards();
 

@@ -37,7 +37,7 @@ class war implements IGame
     if( !self::$warStats )
     {
         self::$warStats = array();
-        if( !array_key_exists( self::$warStats[$warStat->playerName] ) )
+        if( !array_key_exists( self::$warStats[$warStat->playerName] , self::$warStats ) )
         {
             self::$warStats[$playerName];
         }
@@ -92,6 +92,12 @@ class war implements IGame
     {
       $player1Name = $availablePlayers[rand( 0 , 8)];
     }
+
+    self::$warStats[$player0Name] = null;
+    self::$warStats[$player1Name] = null;
+
+    self::$warStats[$player0Name]['wins'] = null;
+    self::$warStats[$player1Name]['wins'] = null;
 
     $player1->setName( $player1Name );
 
