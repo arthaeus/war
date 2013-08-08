@@ -182,8 +182,4 @@ class unoIDeck extends abstractIDeck implements IDeck
 
 }
 
-$u = new unoIDeck();
-$u->buildIDeck();
-print_r( $u );
-
 ?>

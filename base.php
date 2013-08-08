@@ -2,6 +2,10 @@
 
 namespace War;
 
+require_once( "config/config.php" );
+
+use War\Config\config;
+
 abstract class abstractBase
 {
   protected $state = null;

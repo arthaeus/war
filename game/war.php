@@ -4,8 +4,10 @@ namespace War\Game;
 require_once( "../interfaces.php" );
 require_once( "../player/warIPlayer.php" );
 //require_once( "../deck/standardIDeck.php" );
-require_once( "../deck/unoIDeck.php" );
+//require_once( "../deck/unoIDeck.php" );
+require_once( "../deck/IDeckFactory.php" );
 require_once( "../turn/warITurn.php" );
+require_once( "../config/config.php" );
 
 use \stdClass               as stdClass;
 use War\Interfaces\IPlayer;
@@ -14,21 +16,38 @@ use War\Interfaces\IDeck;
 use War\Interfaces\ITurn;
 use War\Card\NoICardException;
 //use War\Deck\standardIDeck;
-use War\Deck\unoIDeck;
+//use War\Deck\unoIDeck;
+use War\Deck\IDeckFactory;
 use War\Player\warIPlayer;
 use War\Turn\normalWarITurn;
+use War\Config\config;
 
 class war implements IGame
 {
 
+  /**
+   * warStats will hold statistics about the current game.
+   */
   public static $warStats = null;
+  public static $config   = null;
+  
+  
   private $IPlayers       = array();
   private $IDeck          = array();
+
   const MAX_WAR_WINS      = 100;
   const MAX_TURNS         = 10000;
 
   public function __construct()
   {
+
+    /**
+     * Initialize the config
+     */
+    self::$config = new config();
+    self::$config->buildConfig();
+    print_r( self::$config );
+    die;
   }
 
   public static function addWarStat( stdClass $warStat )
@@ -93,22 +112,27 @@ class war implements IGame
       $player1Name = $availablePlayers[rand( 0 , 8)];
     }
 
-    self::$warStats[$player0Name] = null;
-    self::$warStats[$player1Name] = null;
-
-    self::$warStats[$player0Name]['wins'] = null;
-    self::$warStats[$player1Name]['wins'] = null;
-
     $player1->setName( $player1Name );
 
     $this->addIPlayer( $player0 );
     $this->addIPlayer( $player1 );
+
+    /**
+     * Initialize the warStats
+     */
+    self::$warStats[$player0Name] = null;
+    self::$warStats[$player1Name] = null;
+    self::$warStats[$player0Name]['wins'] = null;
+    self::$warStats[$player1Name]['wins'] = null;
+
 
 
     /**
      * Create the IDeck of ICards for this game.  Just a standard deck
      * Shuffle and deal the ICards
      */
+
+    //IDeckFactory::getInstance( $IDeckType );
     $deckOfCards = new unoIDeck();
     $deckOfCards->buildIDeck();
     $deckOfCards->shuffleIDeck();
