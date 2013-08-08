@@ -1,19 +1,28 @@
 <?php
 
 namespace War\Deck;
+require_once( "../config/config.php" );
 
-class IDeckFactory
+use War\Config\config;
+
+abstract class IDeckFactory
 {
     public static function getInstance($IDeckType)
     {
+
+        $c = new config();
+        $c->buildConfig();
+        $basePath = $c->getSetting('global')
+            ->basePath
+            ->value;
 
         /**
          * Namespaced deck class name
          */
 
-        $IDeckClassName = '\\War\Deck\\' . $IDeckType . 'IDeck';
-        
-        $IDeckFileName = $IDeckType . 'IDeck.php';
+        $IDeckClassName = '\\War\\Deck\\' . $IDeckType . 'IDeck';
+
+        $IDeckFileName = $basePath . "deck/" . $IDeckType . 'IDeck.php';
 
 
         if (is_file( $IDeckFileName ) )
@@ -23,7 +32,9 @@ class IDeckFactory
         }
         else
         {
-            throw new Exception('Car not found');
+            throw new \Exception('Deck not found');
         }
     }
 }
+
+?>

@@ -46,8 +46,6 @@ class war implements IGame
      */
     self::$config = new config();
     self::$config->buildConfig();
-    print_r( self::$config );
-    die;
   }
 
   public static function addWarStat( stdClass $warStat )
@@ -132,8 +130,10 @@ class war implements IGame
      * Shuffle and deal the ICards
      */
 
-    //IDeckFactory::getInstance( $IDeckType );
-    $deckOfCards = new unoIDeck();
+    $IDeckSettings = self::$config->getSetting( 'IDeck' );
+    $IDeckType     = $IDeckSettings->IDeckClass->value;
+
+    $deckOfCards = IDeckFactory::getInstance( $IDeckType );
     $deckOfCards->buildIDeck();
     $deckOfCards->shuffleIDeck();
 
