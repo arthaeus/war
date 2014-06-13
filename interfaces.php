@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace War\Interfaces;
 
 use \stdClass as stdClass;
