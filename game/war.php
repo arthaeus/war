@@ -89,18 +89,6 @@ class war implements IGame
   public function main()
   {
 
-    $availablePlayers = array(
-      "frodo",
-      "hank_hill",
-      "mum_ra",
-      "gandalf",
-      "steve_urkel",
-      "aragorn",
-      "chris_davis",
-      "samwise",
-      "famous_dave"
-    );
-
     /**
      * Create the IPlayers that will play this game of war.  Add then to the IGame
      */
