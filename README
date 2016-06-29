@@ -6,3 +6,6 @@ cd game
 php war.php
 
 The output from the war game will appear on your console screen
+
+In order to show how easy it is to swap components using interfaces, you can switch the deck of cards that the game uses (I created
+an uno deck as well), modify the config/war.ini file.  You can change the deck of cards without changing any of the underlying code for the game.
