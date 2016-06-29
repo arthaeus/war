@@ -8,6 +8,8 @@ require_once( "../player/warIPlayer.php" );
 require_once( "../deck/IDeckFactory.php" );
 require_once( "../turn/warITurn.php" );
 require_once( "../config/config.php" );
+require_once( "../config/gameProvider.php" );
+require_once( "../vendor/autoload.php" );
 
 use \stdClass               as stdClass;
 use War\Interfaces\IPlayer;
@@ -21,6 +23,8 @@ use War\Deck\IDeckFactory;
 use War\Player\warIPlayer;
 use War\Turn\normalWarITurn;
 use War\Config\config;
+use War\Game\gameProvider;
+use \Pimple\Container;
 
 class war implements IGame
 {
@@ -30,8 +34,8 @@ class war implements IGame
    */
   public static $warStats = null;
   public static $config   = null;
-  
-  
+
+
   private $IPlayers       = array();
   private $IDeck          = array();
 
@@ -46,6 +50,9 @@ class war implements IGame
      */
     self::$config = new config();
     self::$config->buildConfig();
+
+    $this->pimple = new Container();
+    $this->pimple->register(new gameProvider());
   }
 
   public static function addWarStat( stdClass $warStat )
@@ -81,7 +88,7 @@ class war implements IGame
 
   public function main()
   {
-    
+
     $availablePlayers = array(
       "frodo",
       "hank_hill",
@@ -97,20 +104,8 @@ class war implements IGame
     /**
      * Create the IPlayers that will play this game of war.  Add then to the IGame
      */
-    $player0 = new warIPlayer();
-    $player0Name = $availablePlayers[rand( 0 , 8)];
-    $player0->setName( $player0Name );
-    
-    $player1 = new warIPlayer();
-
-    $player1Name = $availablePlayers[rand( 0 , 8)];
-
-    while( $player1Name == $player0Name )
-    {
-      $player1Name = $availablePlayers[rand( 0 , 8)];
-    }
-
-    $player1->setName( $player1Name );
+    $player0 = $this->pimple['warIPlayer'] ;
+    $player1 = $this->pimple['warIPlayer'];
 
     $this->addIPlayer( $player0 );
     $this->addIPlayer( $player1 );
@@ -118,10 +113,10 @@ class war implements IGame
     /**
      * Initialize the warStats
      */
-    self::$warStats[$player0Name] = null;
-    self::$warStats[$player1Name] = null;
-    self::$warStats[$player0Name]['wins'] = null;
-    self::$warStats[$player1Name]['wins'] = null;
+    self::$warStats[$player0->getName()] = null;
+    self::$warStats[$player1->getName()] = null;
+    self::$warStats[$player0->getName()]['wins'] = null;
+    self::$warStats[$player1->getName()]['wins'] = null;
 
 
 
@@ -251,7 +246,7 @@ class war implements IGame
     return true;
   }
 
-  /** 
+  /**
    * A game consists of an IPlayer.  Here are functions pertaining to the IPlayer
    */
   public function addIPlayer( IPlayer $IPlayer )
@@ -265,7 +260,7 @@ class war implements IGame
 
   }
 
-  /** 
+  /**
    * Returns a player object named $name
    */
   public function getIPlayerByName( $name )
@@ -273,7 +268,7 @@ class war implements IGame
     return $this->IPlayers[$IPlayer->getIPlayerByName()];
   }
 
-  /** 
+  /**
    * Will return all IPlayers
    */
   public function getIPlayers()
@@ -281,7 +276,7 @@ class war implements IGame
     return $this->IPlayers;
   }
 
-  /** 
+  /**
    * A game consists of an IDeck (deck of cards).  Here are functions pertaining to the IDeck
    */
   public function getIDeck()
