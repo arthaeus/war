@@ -38,8 +38,15 @@ class gameProvider implements \Pimple\ServiceProviderInterface
       "famous_dave"
     );  
 
+    public static $config;
+
+
     public function register(Container $pimple)
     {
+
+        self::$config = new config();
+        self::$config->buildConfig();
+
         $pimple['warIPlayer'] = $pimple->factory(function ($c) {
 
             /** 
@@ -50,8 +57,27 @@ class gameProvider implements \Pimple\ServiceProviderInterface
             $player0Name = self::$availablePlayers[$pIndex];
             $IPlayer->setName( $player0Name );
             unset(self::$availablePlayers[$pIndex]);
+            self::$availablePlayers = array_values( self::$availablePlayers );
             return $IPlayer;
 
+        });
+
+        $pimple['normalITurn'] = $pimple->factory(function ($c) {
+            return new normalWarITurn();
+        });
+
+        $pimple['IDeck'] = $pimple->factory(function ($c) {
+            /** 
+             * Create the IDeck of ICards for this game.  Just a standard deck
+             * Shuffle and deal the ICards
+             */
+
+            $IDeckSettings = self::$config->getSetting( 'IDeck' );
+            $IDeckType     = $IDeckSettings->IDeckClass->value;
+
+            $deckOfCards = IDeckFactory::getInstance( $IDeckType );
+            $deckOfCards->buildIDeck();
+            return $deckOfCards;
         });
     }
 }

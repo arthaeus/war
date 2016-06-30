@@ -90,7 +90,7 @@ class war implements IGame
   {
 
     /**
-     * Create the IPlayers that will play this game of war.  Add then to the IGame
+     * Create the IPlayers that will play this game of war.  Add them to the IGame
      */
     $player0 = $this->pimple['warIPlayer'] ;
     $player1 = $this->pimple['warIPlayer'];
@@ -107,18 +107,7 @@ class war implements IGame
     self::$warStats[$player1->getName()]['wins'] = null;
 
 
-
-    /**
-     * Create the IDeck of ICards for this game.  Just a standard deck
-     * Shuffle and deal the ICards
-     */
-
-    $IDeckSettings = self::$config->getSetting( 'IDeck' );
-    $IDeckType     = $IDeckSettings->IDeckClass->value;
-
-    $deckOfCards = IDeckFactory::getInstance( $IDeckType );
-    $deckOfCards->buildIDeck();
-    $deckOfCards->shuffleIDeck();
+    $deckOfCards = $this->pimple['IDeck'];
 
     $this->setIDeck( $deckOfCards );
 
@@ -142,7 +131,7 @@ class war implements IGame
       /**
        * create a new turn, and give the turn the information about this IGame (players, their cards, etc)
        */
-      $ITurn = new normalWarITurn();
+      $ITurn = $this->pimple['normalITurn'];
       $ITurn->setIGame( $this );
 
       /**
